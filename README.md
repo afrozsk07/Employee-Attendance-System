@@ -123,7 +123,7 @@ NODE_ENV=development
 ```
 
 **Note**: 
-- For MongoDB Atlas, use your connection string: `mongodb+srv://username:password@cluster.mongodb.net/attendance-system`
+- For MongoDB Atlas, use your connection string: `mongodb+srv://username:password@cluster.mongodb.net/clustername` (sample)
 - Change `JWT_SECRET` to a secure random string in production
 
 #### Frontend Environment Variables (Optional)

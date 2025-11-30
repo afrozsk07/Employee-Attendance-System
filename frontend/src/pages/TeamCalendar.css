@@ -1,0 +1,23 @@
+.team-calendar {
+  width: 100%;
+  border: none;
+  font-family: inherit;
+}
+
+.react-calendar__tile {
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 4px;
+}
+
+.react-calendar__tile:hover {
+  transform: scale(1.05);
+  z-index: 1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+  .page > div[style*="grid"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+

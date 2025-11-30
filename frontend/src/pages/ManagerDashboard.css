@@ -1,0 +1,57 @@
+/* Custom Chart Styles */
+.custom-tooltip {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  padding: 12px !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Chart Container Enhancements */
+/* Removed animation to prevent jitter */
+
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: #e0e0e0;
+  stroke-dasharray: 3 3;
+}
+
+/* Legend Styling */
+.recharts-legend-wrapper {
+  padding-top: 20px !important;
+}
+
+.recharts-legend-item {
+  margin-right: 20px !important;
+}
+
+/* Tooltip Enhancements */
+.recharts-tooltip-wrapper {
+  z-index: 1000;
+}
+
+/* Bar Chart Enhancements */
+.recharts-bar {
+  transition: opacity 0.3s ease;
+}
+
+.recharts-bar:hover {
+  opacity: 0.8;
+}
+
+/* Area Chart Enhancements */
+.recharts-area {
+  transition: opacity 0.3s ease;
+}
+
+/* Responsive Chart Adjustments */
+@media (max-width: 768px) {
+  .recharts-responsive-container {
+    height: 250px !important;
+  }
+  
+  .recharts-legend-wrapper {
+    font-size: 12px !important;
+  }
+}
+

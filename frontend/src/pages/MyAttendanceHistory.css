@@ -1,0 +1,72 @@
+.attendance-calendar {
+  width: 100%;
+  border: none;
+  font-family: inherit;
+}
+
+.react-calendar__tile {
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 4px;
+}
+
+.react-calendar__tile:hover {
+  transform: scale(1.05);
+  z-index: 1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.react-calendar__tile--active {
+  /* Removed pulse animation */
+}
+
+.calendar-day-present {
+  background-color: #d4edda !important;
+  color: #155724 !important;
+}
+
+.calendar-day-absent {
+  background-color: #f8d7da !important;
+  color: #721c24 !important;
+}
+
+.calendar-day-late {
+  background-color: #fff3cd !important;
+  color: #856404 !important;
+}
+
+.calendar-day-half-day {
+  background-color: #ffeaa7 !important;
+  color: #6c5ce7 !important;
+}
+
+.legend {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+.legend.present {
+  background-color: #d4edda;
+}
+
+.legend.absent {
+  background-color: #f8d7da;
+}
+
+.legend.late {
+  background-color: #fff3cd;
+}
+
+.legend.half-day {
+  background-color: #ffeaa7;
+}
+
+@media (max-width: 768px) {
+  .page > div[style*="grid"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+

@@ -1,0 +1,14 @@
+.page-transition {
+  animation: fadeInPage 0.2s ease-out;
+  will-change: opacity;
+}
+
+@keyframes fadeInPage {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+

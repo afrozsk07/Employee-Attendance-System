@@ -1,0 +1,56 @@
+.apply-leave-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.leave-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.leave-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.leave-form label {
+  font-weight: 600;
+  color: #333;
+}
+
+.leave-form input,
+.leave-form select,
+.leave-form textarea {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.leave-form input:focus,
+.leave-form select:focus,
+.leave-form textarea:focus {
+  outline: none;
+  border-color: #4CAF50;
+}
+
+.leave-form textarea {
+  resize: vertical;
+  font-family: inherit;
+}
+
+.leaves-table-container {
+  overflow-x: auto;
+}
+
+@media (max-width: 968px) {
+  .apply-leave-container {
+    grid-template-columns: 1fr;
+  }
+}
+

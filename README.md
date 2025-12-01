@@ -2,6 +2,11 @@
 
 A full-stack employee attendance tracking system with role-based access control for employees and managers.
 
+## Applicant Details
+Name: Shaik Abdul Afroz Basha
+College: Vignan's Lara Institute of Technology and Science
+Contact No.: 7337590572
+
 ## Tech Stack
 
 - **Frontend**: React + Redux Toolkit

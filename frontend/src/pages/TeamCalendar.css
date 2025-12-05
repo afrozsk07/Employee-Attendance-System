@@ -31,23 +31,9 @@
     margin-bottom: 10px !important;
   }
 
-  /* Make calendar and attendance cards same height as selector card */
-  .page > div[style*="grid"] > .card {
-    min-height: 450px;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .page > div[style*="grid"] > .card .table-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-
   /* Improve calendar appearance on mobile */
   .react-calendar {
     font-size: 14px;
-    flex: 1;
   }
 
   .react-calendar__tile {
@@ -94,11 +80,6 @@
   table th,
   table td {
     padding: 8px 6px;
-  }
-
-  /* Adjust card min-height for smaller screens */
-  .page > div[style*="grid"] > .card {
-    min-height: 400px;
   }
 }
 

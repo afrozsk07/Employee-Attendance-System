@@ -8,25 +8,13 @@ dotenv.config();
 const app = express();
 
 // Middleware
-const corsOptions = {
-  origin: function (origin, callback) {
-    const allowedOrigins = [
-      'http://localhost:3000',
-      process.env.FRONTEND_URL,
-      /\.vercel\.app$/ // Allow all Vercel preview deployments
-    ].filter(Boolean); // Remove undefined values
-    
-    if (!origin || allowedOrigins.some(allowed => 
-      typeof allowed === 'string' ? allowed === origin : allowed.test(origin)
-    )) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true
-};
-app.use(cors(corsOptions));
+// Simple CORS config for production
+app.use(cors({
+  origin: true, // Allow all origins in production (or specify your frontend URL)
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

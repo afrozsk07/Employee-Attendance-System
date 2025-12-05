@@ -18,8 +18,8 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate(user?.role === 'manager' ? '/manager/dashboard' : '/dashboard');
+    if (isAuthenticated && user) {
+      navigate(user.role === 'manager' ? '/manager/dashboard' : '/dashboard');
     }
   }, [isAuthenticated, user, navigate]);
 
@@ -40,7 +40,8 @@ const Login = () => {
     e.preventDefault();
     const result = await dispatch(login(formData));
     
-    // Clear form fields after 3 seconds if login fails
+    // Clear form fields and error after delay if login fails
+    // Don't navigate away - stay on the same login page
     if (login.rejected.match(result)) {
       setTimeout(() => {
         setFormData({

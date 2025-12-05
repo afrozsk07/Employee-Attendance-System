@@ -1,14 +1,12 @@
 import React, { useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../store/slices/authSlice';
 import { getAllLeaves } from '../store/slices/leaveSlice';
 import { getAllReports } from '../store/slices/problemSlice';
 import ThemeToggle from './ThemeToggle';
 
 const Navbar = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const location = useLocation();
   const { user } = useSelector((state) => state.auth);
   const { leaves } = useSelector((state) => state.leave);

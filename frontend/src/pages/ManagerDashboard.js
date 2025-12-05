@@ -43,8 +43,7 @@ const ManagerDashboard = () => {
     }
   };
 
-  // Custom colors for department chart
-  const departmentColors = ['#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#F44336', '#00BCD4', '#8BC34A', '#FFC107'];
+
   
   // Pagination calculations for absent employees
   const absentEmployees = dashboardData?.absentEmployeesToday || [];

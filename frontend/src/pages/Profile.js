@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../store/slices/authSlice';
@@ -73,7 +73,7 @@ const Profile = () => {
     return colors[status] || noDataColor;
   };
 
-  const generateMinimalHeatMap = () => {
+  const generateMinimalHeatMap = useCallback(() => {
     if (!heatMapData) return { grid: [], monthLabels: [] };
 
     const today = new Date();
@@ -172,7 +172,7 @@ const Profile = () => {
     });
 
     return { grid, monthLabels };
-  };
+  }, [heatMapData, isDarkMode]);
 
 
   const getScoreColor = (score) => {
@@ -188,8 +188,6 @@ const Profile = () => {
     if (score >= 60) return 'Average';
     return 'Needs Improvement';
   };
-
-  const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   return (
     <div className="page">

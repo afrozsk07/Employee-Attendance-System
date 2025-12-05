@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { submitProblem, getMyReports, clearMessage } from '../store/slices/problemSlice';
-import { formatDate, formatDateTimeFull } from '../utils/dateFormatter';
+import { formatDateTimeFull } from '../utils/dateFormatter';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Toast from '../components/Toast';
 import './ReportProblem.css';

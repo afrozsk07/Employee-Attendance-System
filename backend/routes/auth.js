@@ -1,5 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
 const RegistrationRequest = require('../models/RegistrationRequest');
@@ -88,15 +89,24 @@ router.post('/login', [
 
     const { email, password } = req.body;
 
+    console.log('Login attempt for:', email);
+    console.log('Database:', mongoose.connection.db.databaseName);
+
     // Find user
     const user = await User.findOne({ email });
+    console.log('User found:', !!user);
+    
     if (!user) {
+      console.log('User not found in database');
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
     // Check password
     const isMatch = await user.comparePassword(password);
+    console.log('Password match:', isMatch);
+    
     if (!isMatch) {
+      console.log('Password mismatch');
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 

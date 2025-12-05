@@ -74,6 +74,19 @@ const Profile = () => {
     return colors[status] || noDataColor;
   };
 
+  // Get cell width based on screen size
+  const getCellWidth = () => {
+    if (window.innerWidth <= 480) return 12;
+    if (window.innerWidth <= 968) return 15;
+    return 18;
+  };
+
+  const getGap = () => {
+    if (window.innerWidth <= 480) return 2;
+    if (window.innerWidth <= 968) return 3;
+    return 4;
+  };
+
   const generateMinimalHeatMap = useCallback(() => {
     if (!heatMapData) return { grid: [], monthLabels: [] };
 
@@ -272,9 +285,9 @@ const Profile = () => {
                             </div>
                             <div className="heatmap-month-labels">
                               {monthLabels.map((month, index) => {
-                                // Calculate width based on column count (16px cell + 3px gap)
-                                const cellWidth = 16;
-                                const gap = 3;
+                                // Calculate width based on column count and responsive cell size
+                                const cellWidth = getCellWidth();
+                                const gap = getGap();
                                 // Use consistent calculation: cells * cellWidth + gaps between cells
                                 const width = (month.columnCount * cellWidth) + ((month.columnCount - 1) * gap);
                                 return (

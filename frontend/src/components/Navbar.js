@@ -48,17 +48,13 @@ const Navbar = () => {
             <ThemeToggle />
           </div>
           <button 
-            className="mobile-menu-toggle"
+            className={`mobile-menu-toggle ${isMobileMenuOpen ? 'open' : ''}`}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle menu"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              {isMobileMenuOpen ? (
-                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
-              ) : (
-                <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
-              )}
-            </svg>
+            <span className="hamburger-line"></span>
+            <span className="hamburger-line"></span>
+            <span className="hamburger-line"></span>
           </button>
         </div>
         <div className={`navbar-links ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
@@ -67,36 +63,42 @@ const Navbar = () => {
               <Link 
                 to="/dashboard" 
                 className={isActive('/dashboard') ? 'active' : ''}
+                onClick={() => setIsMobileMenuOpen(false)}
               >
                 Dashboard
               </Link>
               <Link 
                 to="/mark-attendance" 
                 className={isActive('/mark-attendance') ? 'active' : ''}
+                onClick={() => setIsMobileMenuOpen(false)}
               >
                 Mark Attendance
               </Link>
               <Link 
                 to="/my-attendance" 
                 className={isActive('/my-attendance') ? 'active' : ''}
+                onClick={() => setIsMobileMenuOpen(false)}
               >
                 My Attendance
               </Link>
               <Link 
                 to="/apply-leave" 
                 className={isActive('/apply-leave') ? 'active' : ''}
+                onClick={() => setIsMobileMenuOpen(false)}
               >
                 Apply Leave
               </Link>
               <Link 
                 to="/report-problem" 
                 className={isActive('/report-problem') ? 'active' : ''}
+                onClick={() => setIsMobileMenuOpen(false)}
               >
                 Report Problem
               </Link>
               <Link 
                 to="/profile" 
                 className={isActive('/profile') ? 'active' : ''}
+                onClick={() => setIsMobileMenuOpen(false)}
               >
                 Profile
               </Link>
@@ -106,30 +108,35 @@ const Navbar = () => {
               <Link 
                 to="/manager/dashboard" 
                 className={isActive('/manager/dashboard') ? 'active' : ''}
+                onClick={() => setIsMobileMenuOpen(false)}
               >
                 Dashboard
               </Link>
               <Link 
                 to="/manager/attendance" 
                 className={isActive('/manager/attendance') ? 'active' : ''}
+                onClick={() => setIsMobileMenuOpen(false)}
               >
                 All Attendance
               </Link>
               <Link 
                 to="/manager/calendar" 
                 className={isActive('/manager/calendar') ? 'active' : ''}
+                onClick={() => setIsMobileMenuOpen(false)}
               >
                 Calendar
               </Link>
               <Link 
                 to="/manager/reports" 
                 className={isActive('/manager/reports') ? 'active' : ''}
+                onClick={() => setIsMobileMenuOpen(false)}
               >
                 Reports
               </Link>
               <Link 
                 to="/manager/approvals" 
                 className={isActive('/manager/approvals') ? 'active' : ''}
+                onClick={() => setIsMobileMenuOpen(false)}
               >
                 Approvals
                 {(pendingLeavesCount + openReportsCount) > 0 && (
@@ -139,6 +146,7 @@ const Navbar = () => {
               <Link 
                 to="/profile" 
                 className={isActive('/profile') ? 'active' : ''}
+                onClick={() => setIsMobileMenuOpen(false)}
               >
                 Profile
               </Link>

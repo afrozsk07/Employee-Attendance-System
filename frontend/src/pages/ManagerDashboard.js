@@ -229,13 +229,6 @@ const ManagerDashboard = () => {
                 <Tooltip 
                   content={<CustomTooltip />}
                   cursor={{ fill: 'rgba(0, 0, 0, 0.05)' }}
-                  contentStyle={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.98)',
-                    border: '2px solid #e0e0e0',
-                    borderRadius: '10px',
-                    boxShadow: '0 6px 20px rgba(0,0,0,0.2)',
-                    padding: '12px'
-                  }}
                 />
                 <Legend 
                   wrapperStyle={{ paddingTop: '20px' }}

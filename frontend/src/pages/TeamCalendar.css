@@ -15,7 +15,7 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 968px) {
   .page > div[style*="grid"] {
     grid-template-columns: 1fr !important;
     gap: 15px !important;
@@ -29,11 +29,10 @@
 
   .card h2 {
     margin-bottom: 10px !important;
-    font-size: 18px !important;
   }
 
   /* Improve calendar appearance on mobile */
-  .team-calendar {
+  .react-calendar {
     font-size: 14px;
   }
 
@@ -46,15 +45,35 @@
     min-width: 36px;
     font-size: 14px;
   }
+}
 
-  /* Better table on mobile */
-  .table-container table {
+@media (max-width: 480px) {
+  .react-calendar {
+    font-size: 12px;
+  }
+
+  .react-calendar__tile {
+    padding: 6px 2px;
+    font-size: 11px;
+  }
+
+  .react-calendar__month-view__weekdays__weekday {
+    font-size: 11px;
+  }
+
+  .react-calendar__navigation button {
+    min-width: 32px;
     font-size: 13px;
   }
 
-  .table-container th,
-  .table-container td {
-    padding: 10px 8px;
+  /* Make table more readable on small screens */
+  table {
+    font-size: 13px;
+  }
+
+  table th,
+  table td {
+    padding: 8px 6px;
   }
 }
 

@@ -26,11 +26,18 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
+  position: relative;
 }
 
 .navbar-brand {
   font-size: 24px;
   font-weight: bold;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 .navbar-links {
@@ -613,6 +620,20 @@ table tbody tr:hover {
   border-color: #007bff;
 }
 
+/* Hide browser's default password reveal button */
+.password-input-custom::-ms-reveal,
+.password-input-custom::-ms-clear {
+  display: none;
+}
+
+.password-input-custom::-webkit-credentials-auto-fill-button,
+.password-input-custom::-webkit-contacts-auto-fill-button {
+  visibility: hidden;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+}
+
 /* Smooth Transitions for All Interactive Elements */
 a, button, input, select, textarea {
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -656,6 +677,36 @@ a, button, input, select, textarea {
 
 /* Navbar Animations - Removed to prevent jitter */
 
+/* Theme toggle visibility control */
+.theme-toggle-mobile {
+  display: none;
+}
+
+.theme-toggle-desktop {
+  display: block;
+}
+
+/* Theme toggle in navbar for mobile */
+@media (max-width: 968px) {
+  .theme-toggle-mobile {
+    display: block;
+  }
+
+  .theme-toggle-desktop {
+    display: none;
+  }
+
+  .navbar-right .theme-toggle {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 8px;
+  }
+
+  .navbar-right .theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+
 /* Mobile Menu Toggle */
 .mobile-menu-toggle {
   display: none;
@@ -666,6 +717,8 @@ a, button, input, select, textarea {
   padding: 8px;
   border-radius: 4px;
   transition: background-color 0.3s ease;
+  z-index: 1001;
+  position: relative;
 }
 
 .mobile-menu-toggle:hover {
@@ -684,18 +737,23 @@ a, button, input, select, textarea {
 
   .navbar-links {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 15px);
     left: 0;
     right: 0;
     background: #007bff;
     flex-direction: column;
-    padding: 20px;
+    padding: 0;
     gap: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     max-height: 0;
     overflow: hidden;
     opacity: 0;
     transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+    z-index: 999;
+  }
+
+  .dark-mode .navbar-links {
+    background: #1a1f2e;
   }
 
   .navbar-links.mobile-open {
@@ -718,6 +776,11 @@ a, button, input, select, textarea {
 
   .page {
     padding: 15px 10px;
+  }
+
+  /* Make charts stack vertically on mobile */
+  .charts-grid {
+    grid-template-columns: 1fr !important;
   }
 
   .toast {
@@ -774,6 +837,21 @@ a, button, input, select, textarea {
   .modal-content {
     padding: 20px;
     width: 95%;
+  }
+
+  /* Ensure charts are fully responsive on small screens */
+  .charts-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Adjust chart card padding for mobile */
+  .charts-grid .card {
+    padding: 12px;
+  }
+
+  .charts-grid .card h2 {
+    font-size: 16px;
+    margin-bottom: 15px !important;
   }
 }
 

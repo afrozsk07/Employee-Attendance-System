@@ -45,19 +45,54 @@
 }
 
 /* Responsive Chart Adjustments */
-@media (max-width: 768px) {
+@media (max-width: 968px) {
+  .charts-grid {
+    grid-template-columns: 1fr !important;
+  }
+
   .recharts-responsive-container {
-    height: 250px !important;
+    height: 300px !important;
   }
   
   .recharts-legend-wrapper {
     font-size: 12px !important;
   }
+
+  /* Adjust chart text for mobile */
+  .recharts-cartesian-axis-tick text {
+    font-size: 11px !important;
+  }
+
+  .recharts-legend-item-text {
+    font-size: 12px !important;
+  }
 }
 
+@media (max-width: 480px) {
+  .recharts-responsive-container {
+    height: 280px !important;
+  }
 
-@media (max-width: 968px) {
-  .charts-grid {
-    grid-template-columns: 1fr !important;
+  /* Make chart text even smaller on very small screens */
+  .recharts-cartesian-axis-tick text {
+    font-size: 10px !important;
+  }
+
+  .recharts-legend-wrapper {
+    font-size: 11px !important;
+  }
+
+  .recharts-legend-item {
+    margin-right: 10px !important;
+  }
+
+  .recharts-legend-item-text {
+    font-size: 11px !important;
+  }
+
+  /* Adjust tooltip for mobile */
+  .custom-tooltip {
+    padding: 8px !important;
+    font-size: 12px !important;
   }
 }

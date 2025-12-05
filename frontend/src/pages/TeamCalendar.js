@@ -3,6 +3,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import api from '../utils/api';
 import { formatDate, formatTime } from '../utils/dateFormatter';
+import Pagination from '../components/Pagination';
 import './TeamCalendar.css';
 
 const TeamCalendar = () => {
@@ -11,6 +12,8 @@ const TeamCalendar = () => {
   const [loading, setLoading] = useState(true);
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
 
   const fetchAttendance = React.useCallback(async () => {
     try {
@@ -57,6 +60,22 @@ const TeamCalendar = () => {
   };
 
   const selectedDayAttendance = getAttendanceForDate(selectedDate);
+
+  // Pagination logic
+  const totalItems = selectedDayAttendance.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedAttendance = selectedDayAttendance.slice(startIndex, endIndex);
+
+  // Reset to page 1 when date or items per page changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedDate, itemsPerPage]);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   return (
     <div className="page">
@@ -118,38 +137,78 @@ const TeamCalendar = () => {
 
         {/* Selected Date Details */}
         <div className="card">
-          <h2>Attendance for {formatDate(selectedDate)}</h2>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px', flexWrap: 'wrap', gap: '10px' }}>
+            <h2 style={{ margin: 0 }}>Attendance for {formatDate(selectedDate)}</h2>
+            {selectedDayAttendance.length > 0 && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <label style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>Show:</label>
+                <select
+                  value={itemsPerPage}
+                  onChange={(e) => {
+                    setItemsPerPage(parseInt(e.target.value));
+                    setCurrentPage(1);
+                  }}
+                  style={{
+                    padding: '6px 10px',
+                    borderRadius: '6px',
+                    border: '2px solid var(--border-light)',
+                    backgroundColor: 'var(--bg-secondary)',
+                    color: 'var(--text-primary)',
+                    fontSize: '14px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <option value={5}>5</option>
+                  <option value={10}>10</option>
+                  <option value={20}>20</option>
+                  <option value={50}>50</option>
+                </select>
+                <span style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>entries</span>
+              </div>
+            )}
+          </div>
           {loading ? (
             <div className="loading">Loading...</div>
           ) : selectedDayAttendance.length > 0 ? (
-            <div className="table-container">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Employee ID</th>
-                    <th>Employee</th>
-                    <th>Status</th>
-                    <th>Check In</th>
-                    <th>Check Out</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {selectedDayAttendance.map((att) => (
-                    <tr key={att._id || att.id}>
-                      <td>{att.userId?.employeeId || 'N/A'}</td>
-                      <td>{att.userId?.name || 'N/A'}</td>
-                      <td>
-                        <span className={`badge badge-${att.status}`}>
-                          {att.status}
-                        </span>
-                      </td>
-                      <td>{att.checkInTime ? formatTime(att.checkInTime) : '-'}</td>
-                      <td>{att.checkOutTime ? formatTime(att.checkOutTime) : '-'}</td>
+            <>
+              <div className="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Employee ID</th>
+                      <th>Employee</th>
+                      <th>Status</th>
+                      <th>Check In</th>
+                      <th>Check Out</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {paginatedAttendance.map((att) => (
+                      <tr key={att._id || att.id}>
+                        <td>{att.userId?.employeeId || 'N/A'}</td>
+                        <td>{att.userId?.name || 'N/A'}</td>
+                        <td>
+                          <span className={`badge badge-${att.status}`}>
+                            {att.status}
+                          </span>
+                        </td>
+                        <td>{att.checkInTime ? formatTime(att.checkInTime) : '-'}</td>
+                        <td>{att.checkOutTime ? formatTime(att.checkOutTime) : '-'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {totalPages > 1 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                  itemsPerPage={itemsPerPage}
+                  totalItems={totalItems}
+                />
+              )}
+            </>
           ) : (
             <p>No attendance records for this date.</p>
           )}

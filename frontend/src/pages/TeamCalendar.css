@@ -19,5 +19,15 @@
   .page > div[style*="grid"] {
     grid-template-columns: 1fr !important;
   }
+
+  /* Make the header with items per page selector stack on mobile */
+  .card > div[style*="flex"] {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  .card h2 {
+    margin-bottom: 10px !important;
+  }
 }
 

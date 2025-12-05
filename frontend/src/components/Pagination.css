@@ -63,17 +63,43 @@
   font-weight: 600;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 968px) {
   .pagination-container {
     flex-direction: column;
     align-items: center;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
   }
 
   .pagination-info {
     order: 2;
+    font-size: 13px;
   }
 
   .pagination {
     order: 1;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .pagination-btn {
+    min-width: 32px;
+    height: 32px;
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pagination-btn {
+    min-width: 28px;
+    height: 28px;
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+
+  .pagination-info {
+    font-size: 12px;
   }
 }

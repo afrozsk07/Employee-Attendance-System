@@ -288,13 +288,24 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 968px) {
   .top-performers-grid {
     grid-template-columns: 1fr;
   }
 
   .filters-row {
     grid-template-columns: 1fr;
+  }
+
+  /* Fix pagination width to match table container on mobile */
+  .card .table-container + .pagination-container {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .all-employees-table-container + .pagination-container {
+    max-width: 100%;
+    overflow-x: auto;
   }
 }
 

@@ -18,6 +18,14 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Ensure DB connection before handling requests
+app.use(async (req, res, next) => {
+  if (mongoose.connection.readyState !== 1) {
+    await connectDB();
+  }
+  next();
+});
+
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/attendance', require('./routes/attendance'));
@@ -36,19 +44,28 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Server is running' });
 });
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/attendance-system')
-.then(() => {
-  console.log('Connected to MongoDB');
+// Connect to MongoDB immediately
+const connectDB = async () => {
+  if (mongoose.connection.readyState === 0) {
+    try {
+      await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/attendance-system');
+      console.log('Connected to MongoDB');
+    } catch (error) {
+      console.error('MongoDB connection error:', error);
+    }
+  }
+};
+
+// Connect on startup
+connectDB();
+
+// For local development
+if (process.env.NODE_ENV !== 'production') {
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
-})
-.catch((error) => {
-  console.error('MongoDB connection error:', error);
-  process.exit(1);
-});
+}
 
 module.exports = app;
 

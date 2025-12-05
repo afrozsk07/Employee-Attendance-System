@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../store/slices/authSlice';
 import { getAllLeaves } from '../store/slices/leaveSlice';
 import { getAllReports } from '../store/slices/problemSlice';
+import ThemeToggle from './ThemeToggle';
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -12,6 +13,7 @@ const Navbar = () => {
   const { user } = useSelector((state) => state.auth);
   const { leaves } = useSelector((state) => state.leave);
   const { reports } = useSelector((state) => state.problem);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
   // Fetch pending leaves and open reports for managers
   useEffect(() => {
@@ -30,10 +32,10 @@ const Navbar = () => {
     ? reports.filter(report => report.status === 'open' || report.status === 'in-progress').length
     : 0;
 
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate('/login');
-  };
+  //const handleLogout = () => {
+  //  dispatch(logout());
+  //  navigate('/login');
+  //};
 
   const isActive = (path) => {
     return location.pathname === path;
@@ -43,7 +45,20 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-content">
         <div className="navbar-brand">Attendance System</div>
-        <div className="navbar-links">
+        <button 
+          className="mobile-menu-toggle"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            {isMobileMenuOpen ? (
+              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
+            ) : (
+              <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+            )}
+          </svg>
+        </button>
+        <div className={`navbar-links ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
           {user?.role === 'employee' ? (
             <>
               <Link 
@@ -110,21 +125,12 @@ const Navbar = () => {
                 Reports
               </Link>
               <Link 
-                to="/manager/leave-requests" 
-                className={isActive('/manager/leave-requests') ? 'active' : ''}
+                to="/manager/approvals" 
+                className={isActive('/manager/approvals') ? 'active' : ''}
               >
-                Leave Requests
-                {pendingLeavesCount > 0 && (
-                  <span className="navbar-badge">{pendingLeavesCount}</span>
-                )}
-              </Link>
-              <Link 
-                to="/manager/troubleshoot" 
-                className={isActive('/manager/troubleshoot') ? 'active' : ''}
-              >
-                Troubleshoot
-                {openReportsCount > 0 && (
-                  <span className="navbar-badge">{openReportsCount}</span>
+                Approvals
+                {(pendingLeavesCount + openReportsCount) > 0 && (
+                  <span className="navbar-badge">{pendingLeavesCount + openReportsCount}</span>
                 )}
               </Link>
               <Link 
@@ -135,6 +141,7 @@ const Navbar = () => {
               </Link>
             </>
           )}
+          <ThemeToggle />
         </div>
       </div>
     </nav>

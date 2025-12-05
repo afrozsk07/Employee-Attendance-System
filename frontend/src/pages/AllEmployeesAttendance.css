@@ -1,23 +1,20 @@
 .attendance-view-container {
-  position: relative;
   margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .attendance-section {
-  transition: opacity 0.3s ease, filter 0.3s ease, pointer-events 0.3s ease;
-}
-
-.attendance-section.faded {
-  opacity: 0.3;
-  filter: blur(5px);
-  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .best-employees-section {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   animation: fadeIn 0.3s ease;
 }
 
@@ -32,20 +29,25 @@
   }
 }
 
-.toggle-container {
+.card-header-with-toggle {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  padding: 10px 0;
+  margin-bottom: 20px;
+}
+
+.card-header-with-toggle h2 {
+  margin: 0;
 }
 
 .toggle-label {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
   cursor: pointer;
-  font-weight: 600;
-  color: #333;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--text-primary);
   user-select: none;
 }
 
@@ -123,14 +125,16 @@
 
 .filter-group label {
   font-weight: 600;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .filter-group select {
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 2px solid var(--border-light);
   border-radius: 8px;
   font-size: 14px;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .top-performers-grid {
@@ -294,3 +298,21 @@
   }
 }
 
+
+/* Disabled filter inputs styling */
+.form-group input:disabled,
+.form-group select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: var(--bg-hover);
+}
+
+.form-group label {
+  transition: opacity 0.3s ease;
+}
+
+/* Dim labels when inputs are disabled */
+.form-group:has(input:disabled) label,
+.form-group:has(select:disabled) label {
+  opacity: 0.5;
+}

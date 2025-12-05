@@ -4,6 +4,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { getMyHistory, getMySummary } from '../store/slices/attendanceSlice';
 import { formatDate, formatDateTime } from '../utils/dateFormatter';
+import Pagination from '../components/Pagination';
 import './MyAttendanceHistory.css';
 
 const MyAttendanceHistory = () => {
@@ -12,6 +13,10 @@ const MyAttendanceHistory = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   useEffect(() => {
     dispatch(getMyHistory({ month: selectedMonth, year: selectedYear }));
@@ -41,6 +46,13 @@ const MyAttendanceHistory = () => {
   };
 
   const selectedAttendance = getAttendanceForDate(selectedDate);
+
+  // Pagination calculations
+  const paginatedHistory = myHistory.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+  const totalPages = Math.ceil(myHistory.length / itemsPerPage);
 
   return (
     <div className="page">
@@ -154,34 +166,43 @@ const MyAttendanceHistory = () => {
         {loading ? (
           <div className="loading">Loading...</div>
         ) : myHistory.length > 0 ? (
-          <div className="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Check In</th>
-                  <th>Check Out</th>
-                  <th>Status</th>
-                  <th>Total Hours</th>
-                </tr>
-              </thead>
-              <tbody>
-                {myHistory.map((attendance) => (
-                  <tr key={attendance._id || attendance.id}>
-                    <td>{formatDate(attendance.date)}</td>
-                    <td>{attendance.checkInTime ? formatDateTime(attendance.checkInTime) : '-'}</td>
-                    <td>{attendance.checkOutTime ? formatDateTime(attendance.checkOutTime) : '-'}</td>
-                    <td>
-                      <span className={`badge badge-${attendance.status}`}>
-                        {attendance.status}
-                      </span>
-                    </td>
-                    <td>{attendance.totalHours || 0}</td>
+          <>
+            <div className="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Check In</th>
+                    <th>Check Out</th>
+                    <th>Status</th>
+                    <th>Total Hours</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {paginatedHistory.map((attendance) => (
+                    <tr key={attendance._id || attendance.id}>
+                      <td>{formatDate(attendance.date)}</td>
+                      <td>{attendance.checkInTime ? formatDateTime(attendance.checkInTime) : '-'}</td>
+                      <td>{attendance.checkOutTime ? formatDateTime(attendance.checkOutTime) : '-'}</td>
+                      <td>
+                        <span className={`badge badge-${attendance.status}`}>
+                          {attendance.status}
+                        </span>
+                      </td>
+                      <td>{attendance.totalHours || 0}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              itemsPerPage={itemsPerPage}
+              totalItems={myHistory.length}
+            />
+          </>
         ) : (
           <p>No attendance records found for this month.</p>
         )}

@@ -18,12 +18,10 @@ export const login = createAsyncThunk(
 
 export const register = createAsyncThunk(
   'auth/register',
-  async ({ name, email, password, department }, { rejectWithValue }) => {
+  async ({ name, email, password, employeeId, department }, { rejectWithValue }) => {
     try {
-      const response = await api.post('/auth/register', { name, email, password, department });
-      const { token, user } = response.data;
-      localStorage.setItem('token', token);
-      return { user };
+      const response = await api.post('/auth/register', { name, email, password, employeeId, department });
+      return { message: response.data.message };
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Registration failed');
     }
@@ -88,16 +86,13 @@ const authSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(register.fulfilled, (state, action) => {
+      .addCase(register.fulfilled, (state) => {
         state.loading = false;
-        state.user = action.payload.user;
-        state.isAuthenticated = true;
         state.error = null;
       })
       .addCase(register.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        state.isAuthenticated = false;
       })
       // Check Auth
       .addCase(checkAuth.pending, (state) => {

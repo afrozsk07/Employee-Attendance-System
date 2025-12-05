@@ -36,13 +36,37 @@
 .toast-content {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 12px;
+}
+
+.toast-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toast-info .toast-icon {
+  color: #007bff;
+}
+
+.toast-success .toast-icon {
+  color: #28a745;
+}
+
+.toast-error .toast-icon {
+  color: #dc3545;
+}
+
+.toast-warning .toast-icon {
+  color: #ffc107;
 }
 
 .toast-message {
   flex: 1;
   font-size: 14px;
   color: #333;
+  line-height: 1.5;
 }
 
 .toast-close {

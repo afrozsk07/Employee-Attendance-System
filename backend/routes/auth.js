@@ -2,6 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
+const RegistrationRequest = require('../models/RegistrationRequest');
 const { auth } = require('../middleware/auth');
 
 const router = express.Router();
@@ -12,13 +13,14 @@ const generateToken = (userId) => {
 };
 
 // @route   POST /api/auth/register
-// @desc    Register a new user (employee only)
+// @desc    Create registration request (pending manager approval)
 // @access  Public
 router.post('/register', [
   body('name').trim().notEmpty().withMessage('Name is required'),
   body('email').isEmail().withMessage('Please provide a valid email'),
   body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
-  body('department').optional().trim()
+  body('employeeId').trim().notEmpty().withMessage('Employee ID is required'),
+  body('department').trim().notEmpty().withMessage('Department is required')
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -26,7 +28,7 @@ router.post('/register', [
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, email, password, department } = req.body;
+    const { name, email, password, employeeId, department } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -34,38 +36,36 @@ router.post('/register', [
       return res.status(400).json({ message: 'User already exists with this email' });
     }
 
-    // Generate unique employee ID
-    const lastUser = await User.findOne().sort({ employeeId: -1 });
-    let employeeId = 'EMP001';
-    if (lastUser && lastUser.employeeId) {
-      const lastNum = parseInt(lastUser.employeeId.replace('EMP', ''));
-      employeeId = `EMP${String(lastNum + 1).padStart(3, '0')}`;
+    // Check if registration request already exists
+    const existingRequest = await RegistrationRequest.findOne({ email });
+    if (existingRequest) {
+      return res.status(400).json({ message: 'Registration request already submitted for this email' });
     }
 
-    // Create new user (only employees can register)
-    const user = new User({
+    // Check if employee ID is already taken
+    const existingEmployeeId = await User.findOne({ employeeId });
+    if (existingEmployeeId) {
+      return res.status(400).json({ message: 'Employee ID already exists' });
+    }
+
+    const existingRequestEmployeeId = await RegistrationRequest.findOne({ employeeId });
+    if (existingRequestEmployeeId) {
+      return res.status(400).json({ message: 'Employee ID already in use by pending request' });
+    }
+
+    // Create registration request
+    const registrationRequest = new RegistrationRequest({
       name,
       email,
       password,
-      role: 'employee',
       employeeId,
-      department: department || 'General'
+      department
     });
 
-    await user.save();
-
-    const token = generateToken(user._id);
+    await registrationRequest.save();
 
     res.status(201).json({
-      token,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        employeeId: user.employeeId,
-        department: user.department
-      }
+      message: 'Registration request submitted successfully. Waiting for manager approval.'
     });
   } catch (error) {
     console.error('Register error:', error);
@@ -100,6 +100,10 @@ router.post('/login', [
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
+    // Update last login time
+    user.lastLogin = new Date();
+    await user.save();
+
     const token = generateToken(user._id);
 
     res.json({
@@ -110,7 +114,8 @@ router.post('/login', [
         email: user.email,
         role: user.role,
         employeeId: user.employeeId,
-        department: user.department
+        department: user.department,
+        lastLogin: user.lastLogin
       }
     });
   } catch (error) {
@@ -131,7 +136,8 @@ router.get('/me', auth, async (req, res) => {
         email: req.user.email,
         role: req.user.role,
         employeeId: req.user.employeeId,
-        department: req.user.department
+        department: req.user.department,
+        lastLogin: req.user.lastLogin
       }
     });
   } catch (error) {

@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../store/slices/authSlice';
+import { useTheme } from '../context/ThemeContext';
 import api from '../utils/api';
 import { formatDate } from '../utils/dateFormatter';
 import LoadingSpinner from '../components/LoadingSpinner';
 import './Profile.css';
 
 const Profile = () => {
+  const { isDarkMode } = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
@@ -15,11 +17,10 @@ const Profile = () => {
   const [attendanceScore, setAttendanceScore] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [timeframe, setTimeframe] = useState('6months'); // 6months, 1year
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate('/login');
+    navigate('/');
   };
 
   useEffect(() => {
@@ -27,13 +28,12 @@ const Profile = () => {
       fetchHeatMapData();
       fetchAttendanceScore();
     }
-  }, [user, selectedYear, timeframe]);
+  }, [user, selectedYear]);
 
   const fetchHeatMapData = async () => {
     try {
-      // For minimal heatmap, we need data for the selected timeframe
-      const year = timeframe === '6months' ? selectedYear : selectedYear;
-      const response = await api.get(`/profile/attendance-heatmap?year=${year}`);
+      // Fetch data for last 6 months
+      const response = await api.get(`/profile/attendance-heatmap?year=${selectedYear}`);
       setHeatMapData(response.data);
     } catch (error) {
       console.error('Failed to fetch heat map data:', error);
@@ -53,13 +53,24 @@ const Profile = () => {
 
   const getHeatMapColor = (status) => {
     // Color scheme: green (present), yellow (late), red (absent), gray (no data)
-    const colors = {
+    const lightColors = {
       present: '#4CAF50',    // Green
       late: '#FFC107',       // Yellow
       absent: '#F44336',     // Red
       'half-day': '#FF9800'  // Orange
     };
-    return colors[status] || '#EBEDF0'; // Light gray for no data
+    
+    const darkColors = {
+      present: '#66BB6A',    // Lighter green for dark mode
+      late: '#FFD54F',       // Lighter yellow for dark mode
+      absent: '#EF5350',     // Lighter red for dark mode
+      'half-day': '#FFA726'  // Lighter orange for dark mode
+    };
+    
+    const colors = isDarkMode ? darkColors : lightColors;
+    const noDataColor = isDarkMode ? '#2d3748' : '#EBEDF0';
+    
+    return colors[status] || noDataColor;
   };
 
   const generateMinimalHeatMap = () => {
@@ -68,12 +79,8 @@ const Profile = () => {
     const today = new Date();
     const startDate = new Date();
     
-    // Calculate start date based on timeframe
-    if (timeframe === '6months') {
-      startDate.setMonth(today.getMonth() - 6);
-    } else {
-      startDate.setFullYear(today.getFullYear() - 1);
-    }
+    // Calculate start date for last 6 months
+    startDate.setMonth(today.getMonth() - 6);
     
     startDate.setDate(1); // Start from first day of month
     startDate.setHours(0, 0, 0, 0);
@@ -215,6 +222,11 @@ const Profile = () => {
                   </span>
                 </p>
               </div>
+              {user.lastLogin && (
+                <div className="info-item">
+                  <p><strong>Last Login:</strong> {formatDate(user.lastLogin)} at {new Date(user.lastLogin).toLocaleTimeString()}</p>
+                </div>
+              )}
               <div className="info-item" style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid #e0e0e0' }}>
                 <button onClick={handleLogout} className="btn btn-danger" style={{ width: '100%' }}>
                   Logout
@@ -233,18 +245,9 @@ const Profile = () => {
                 <div className="card fade-in" style={{ animationDelay: '0.2s' }}>
                   <div className="heatmap-header">
                     <h2>Attendance Heat Map</h2>
-                    <div className="timeframe-selector">
-                      <select
-                        value={timeframe}
-                        onChange={(e) => {
-                          setTimeframe(e.target.value);
-                          setLoading(true);
-                        }}
-                      >
-                        <option value="6months">Last 6 Months</option>
-                        <option value="1year">Last Year</option>
-                      </select>
-                    </div>
+                    <span style={{ fontSize: '14px', color: 'var(--text-secondary)', fontWeight: '500' }}>
+                      Last 6 Months
+                    </span>
                   </div>
                   {heatMapData && (() => {
                     const { grid, monthLabels } = generateMinimalHeatMap();
@@ -270,15 +273,20 @@ const Profile = () => {
                             </div>
                             <div className="heatmap-month-labels">
                               {monthLabels.map((month, index) => {
-                                // Calculate width based on column count (14px cell + 3px gap)
-                                const cellWidth = 14;
+                                // Calculate width based on column count (16px cell + 3px gap)
+                                const cellWidth = 16;
                                 const gap = 3;
+                                // Use consistent calculation: cells * cellWidth + gaps between cells
                                 const width = (month.columnCount * cellWidth) + ((month.columnCount - 1) * gap);
                                 return (
                                   <div 
                                     key={index} 
                                     className="month-label" 
-                                    style={{ width: `${width}px`, flexShrink: 0 }}
+                                    style={{ 
+                                      width: `${width}px`, 
+                                      flexShrink: 0,
+                                      marginRight: index < monthLabels.length - 1 ? `${gap}px` : '0px'
+                                    }}
                                   >
                                     {month.name}
                                   </div>
@@ -323,21 +331,29 @@ const Profile = () => {
                           setLoading(true);
                         }}
                       >
-                        {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 2 + i).map((y) => (
-                          <option key={y} value={y}>
-                            {y}
-                          </option>
-                        ))}
+                        {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 4 + i).map((y) => {
+                          const currentYear = new Date().getFullYear();
+                          const isFutureYear = y > currentYear;
+                          return (
+                            <option key={y} value={y} disabled={isFutureYear}>
+                              {y}
+                            </option>
+                          );
+                        })}
                       </select>
                     </div>
                   </div>
                   {attendanceScore && (
                     <div className="score-container">
-                      <div className="score-circle" style={{ borderColor: getScoreColor(attendanceScore.score) }}>
-                        <div className="score-value" style={{ color: getScoreColor(attendanceScore.score) }}>
-                          {attendanceScore.score.toFixed(1)}%
+                      <div className="score-circle-wrapper">
+                        <div className="score-circle" style={{ borderColor: getScoreColor(attendanceScore.score) }}>
+                          <div className="score-value" style={{ color: getScoreColor(attendanceScore.score) }}>
+                            {attendanceScore.score.toFixed(1)}%
+                          </div>
                         </div>
-                        <div className="score-label">{getScoreLabel(attendanceScore.score)}</div>
+                        <div className="score-badge" style={{ backgroundColor: getScoreColor(attendanceScore.score) }}>
+                          {getScoreLabel(attendanceScore.score)}
+                        </div>
                       </div>
                       <div className="score-stats">
                         <div className="stat-box">

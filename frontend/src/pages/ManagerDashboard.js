@@ -6,12 +6,17 @@ import {
 } from 'recharts';
 import api from '../utils/api';
 import { formatDate } from '../utils/dateFormatter';
+import Pagination from '../components/Pagination';
 import './ManagerDashboard.css';
 
 const ManagerDashboard = () => {
   const { user } = useSelector((state) => state.auth);
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
+  
+  // Pagination state for absent employees
+  const [absentPage, setAbsentPage] = useState(1);
+  const itemsPerPage = 5;
 
   useEffect(() => {
     fetchDashboard();
@@ -40,6 +45,14 @@ const ManagerDashboard = () => {
 
   // Custom colors for department chart
   const departmentColors = ['#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#F44336', '#00BCD4', '#8BC34A', '#FFC107'];
+  
+  // Pagination calculations for absent employees
+  const absentEmployees = dashboardData?.absentEmployeesToday || [];
+  const paginatedAbsentEmployees = absentEmployees.slice(
+    (absentPage - 1) * itemsPerPage,
+    absentPage * itemsPerPage
+  );
+  const absentTotalPages = Math.ceil(absentEmployees.length / itemsPerPage);
   
   // Custom tooltip for better formatting
   const CustomTooltip = ({ active, payload, label }) => {
@@ -108,11 +121,11 @@ const ManagerDashboard = () => {
       </div>
 
       {/* Charts Row */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+      <div className="charts-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
         {/* Weekly Trend - Line Chart (Original Style) */}
         {dashboardData?.weeklyTrend && (
           <div className="card fade-in" style={{ animationDelay: '0.5s' }}>
-            <h2 style={{ marginBottom: '20px', color: '#333' }}>📈 Weekly Attendance Trend</h2>
+            <h2 style={{ marginBottom: '20px' }}>📈 Weekly Attendance Trend</h2>
             <ResponsiveContainer width="100%" height={350}>
               <LineChart data={dashboardData.weeklyTrend} margin={{ top: 10, right: 30, left: 0, bottom: 60 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
@@ -172,11 +185,11 @@ const ManagerDashboard = () => {
         {/* Department Wise - Enhanced with Stacked Bar and Summary */}
         {dashboardData?.departmentWise && (
           <div className="card fade-in" style={{ animationDelay: '0.6s' }}>
-            <h2 style={{ marginBottom: '20px', color: '#333' }}>🏢 Department-wise Attendance</h2>
+            <h2 style={{ marginBottom: '20px' }}>🏢 Department-wise Attendance</h2>
             <ResponsiveContainer width="100%" height={350}>
               <BarChart 
                 data={dashboardData.departmentWise} 
-                margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+                margin={{ top: 10, right: 30, left: 0, bottom: 60 }}
                 barCategoryGap="20%"
               >
                 <defs>
@@ -203,8 +216,16 @@ const ManagerDashboard = () => {
                   height={100}
                 />
                 <YAxis 
-                  tick={{ fill: '#666', fontSize: 12 }} 
-                  label={{ value: 'No. of Employees', angle: -90, position: 'insideLeft', style: { fill: '#666' } }}
+                  tick={{ fill: '#666', fontSize: 12 }}
+                  interval={0}
+                  tickMargin={8}
+                  label={{ 
+                    value: 'No. of Employees', 
+                    angle: -90, 
+                    position: 'insideLeft', 
+                    style: { fill: '#666', textAnchor: 'middle' },
+                    offset: 10
+                  }}
                 />
                 <Tooltip 
                   content={<CustomTooltip />}
@@ -259,7 +280,7 @@ const ManagerDashboard = () => {
       </div>
 
       {/* Absent Employees Today */}
-      {dashboardData?.absentEmployeesToday && dashboardData.absentEmployeesToday.length > 0 && (
+      {absentEmployees.length > 0 ? (
         <div className="card">
           <h2>Absent Employees Today</h2>
           <div className="table-container">
@@ -272,7 +293,7 @@ const ManagerDashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {dashboardData.absentEmployeesToday.map((emp) => (
+                {paginatedAbsentEmployees.map((emp) => (
                   <tr key={emp.id}>
                     <td>{emp.employeeId}</td>
                     <td>{emp.name}</td>
@@ -282,10 +303,15 @@ const ManagerDashboard = () => {
               </tbody>
             </table>
           </div>
+          <Pagination
+            currentPage={absentPage}
+            totalPages={absentTotalPages}
+            onPageChange={setAbsentPage}
+            itemsPerPage={itemsPerPage}
+            totalItems={absentEmployees.length}
+          />
         </div>
-      )}
-
-      {(!dashboardData?.absentEmployeesToday || dashboardData.absentEmployeesToday.length === 0) && (
+      ) : (
         <div className="card">
           <h2>Absent Employees Today</h2>
           <p>All employees are present today! 🎉</p>

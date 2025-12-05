@@ -32,6 +32,9 @@ const userSchema = new mongoose.Schema({
   department: {
     type: String,
     trim: true
+  },
+  lastLogin: {
+    type: Date
   }
 }, {
   timestamps: true

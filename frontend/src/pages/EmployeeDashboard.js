@@ -165,9 +165,12 @@ const EmployeeDashboard = () => {
         </div>
       )}
 
-      <div style={{ marginTop: '20px', textAlign: 'center' }}>
-        <Link to="/my-attendance" className="btn btn-primary">
-          View Full Attendance History
+      <div style={{ marginTop: '30px', textAlign: 'center' }}>
+        <Link to="/my-attendance" className="btn btn-primary btn-animated btn-lg">
+          <span>View Full Attendance History</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style={{ marginLeft: '8px' }}>
+            <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8-8-8z"/>
+          </svg>
         </Link>
       </div>
     </div>

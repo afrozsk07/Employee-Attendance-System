@@ -55,3 +55,9 @@
   }
 }
 
+
+@media (max-width: 968px) {
+  .charts-grid {
+    grid-template-columns: 1fr !important;
+  }
+}

@@ -1,0 +1,278 @@
+/* Tabs */
+.approvals-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 0;
+}
+
+.tab-button {
+  padding: 12px 24px;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  color: #666;
+  transition: all 0.25s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tab-button:hover {
+  color: #007bff;
+  background: rgba(0, 123, 255, 0.05);
+}
+
+.tab-button.active {
+  color: #007bff;
+  border-bottom-color: #007bff;
+  font-weight: 600;
+}
+
+.tab-badge {
+  background: #dc3545;
+  color: white;
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  min-width: 20px;
+  text-align: center;
+}
+
+.tab-button.active .tab-badge {
+  background: #007bff;
+}
+
+/* Tab Content */
+.tab-content {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.tab-panel {
+  min-height: 300px;
+}
+
+.no-data {
+  text-align: center;
+  color: #666;
+  padding: 40px 20px;
+  font-size: 16px;
+}
+
+/* Reports List */
+.reports-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.report-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.report-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+  gap: 20px;
+}
+
+.report-header h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.report-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 14px;
+  color: #666;
+}
+
+.report-badges {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.report-description {
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  animation: scaleIn 0.2s ease-out;
+}
+
+.modal-content.modal-large {
+  max-width: 600px;
+}
+
+.modal-content h3 {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 22px;
+}
+
+.modal-body {
+  margin-bottom: 20px;
+}
+
+.modal-body p {
+  margin: 10px 0;
+  color: #555;
+}
+
+.modal-body p strong {
+  color: #333;
+  margin-right: 8px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.modal-actions button {
+  flex: 1;
+}
+
+/* Responsive */
+@media (max-width: 968px) {
+  .approvals-tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  .tab-button {
+    white-space: nowrap;
+    min-width: fit-content;
+  }
+
+  .report-card {
+    padding: 15px;
+  }
+
+  .report-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .report-badges {
+    align-self: flex-start;
+  }
+
+  .report-meta {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 768px) {
+  .approvals-tabs {
+    flex-direction: column;
+    gap: 0;
+    border-bottom: none;
+  }
+
+  .tab-button {
+    border-bottom: 1px solid #e0e0e0;
+    border-left: 3px solid transparent;
+    justify-content: space-between;
+    padding: 15px 20px;
+  }
+
+  .tab-button.active {
+    border-bottom-color: #e0e0e0;
+    border-left-color: #007bff;
+  }
+
+  .modal-content {
+    padding: 20px;
+    width: 95%;
+    max-height: 85vh;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .modal-actions button {
+    width: 100%;
+  }
+
+  .table-container {
+    font-size: 14px;
+  }
+
+  table th,
+  table td {
+    padding: 10px 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tab-button {
+    font-size: 14px;
+    padding: 12px 15px;
+  }
+
+  .report-card {
+    padding: 12px;
+  }
+
+  .report-header h3 {
+    font-size: 16px;
+  }
+
+  .report-meta {
+    font-size: 12px;
+  }
+
+  .modal-content {
+    padding: 15px;
+  }
+}

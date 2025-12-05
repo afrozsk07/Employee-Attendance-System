@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getAllAttendance } from '../store/slices/attendanceSlice';
 import { getBestEmployees } from '../store/slices/dashboardSlice';
 import LoadingSpinner from '../components/LoadingSpinner';
-import api from '../utils/api';
+import Pagination from '../components/Pagination';
+//import api from '../utils/api';
 import { formatDate, formatDateTime } from '../utils/dateFormatter';
 import './AllEmployeesAttendance.css';
 
@@ -20,6 +21,11 @@ const AllEmployeesAttendance = () => {
   });
   const [month, setMonth] = useState(new Date().getMonth() + 1);
   const [year, setYear] = useState(new Date().getFullYear());
+  
+  // Pagination state
+  const [attendancePage, setAttendancePage] = useState(1);
+  const [rankingPage, setRankingPage] = useState(1);
+  const itemsPerPage = 10;
 
   useEffect(() => {
     // Only fetch on initial load, not when filters change
@@ -64,6 +70,20 @@ const AllEmployeesAttendance = () => {
     return 'Needs Improvement';
   };
 
+  // Pagination calculations
+  const paginatedAttendance = allAttendance.slice(
+    (attendancePage - 1) * itemsPerPage,
+    attendancePage * itemsPerPage
+  );
+  const attendanceTotalPages = Math.ceil(allAttendance.length / itemsPerPage);
+
+  const allEmployeesRanking = bestEmployees?.allEmployees || [];
+  const paginatedRanking = allEmployeesRanking.slice(
+    (rankingPage - 1) * itemsPerPage,
+    rankingPage * itemsPerPage
+  );
+  const rankingTotalPages = Math.ceil(allEmployeesRanking.length / itemsPerPage);
+
   return (
     <div className="page">
       <div className="page-header">
@@ -71,29 +91,25 @@ const AllEmployeesAttendance = () => {
         <p>View and filter attendance records</p>
       </div>
 
-      {/* Toggle Switch */}
-      <div className="card">
-        <div className="toggle-container">
-          <label className="toggle-label">
-            <span>Show Best Employees</span>
-            <div className="toggle-switch">
-              <input
-                type="checkbox"
-                checked={showBestEmployees}
-                onChange={(e) => setShowBestEmployees(e.target.checked)}
-              />
-              <span className="toggle-slider"></span>
-            </div>
-          </label>
-        </div>
-      </div>
-
       <div className="attendance-view-container">
         {/* Attendance Filters and Table */}
         <div className={`attendance-section ${showBestEmployees ? 'faded' : ''}`}>
           {/* Filters */}
           <div className="card">
-            <h2>Filters</h2>
+            <div className="card-header-with-toggle">
+              <h2>Filters</h2>
+              <label className="toggle-label">
+                <span>Show Best Employees</span>
+                <div className="toggle-switch">
+                  <input
+                    type="checkbox"
+                    checked={showBestEmployees}
+                    onChange={(e) => setShowBestEmployees(e.target.checked)}
+                  />
+                  <span className="toggle-slider"></span>
+                </div>
+              </label>
+            </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
               <div className="form-group" style={{ marginBottom: 0 }}>
                 <label>Employee ID</label>
@@ -103,6 +119,7 @@ const AllEmployeesAttendance = () => {
                   value={filters.employeeId}
                   onChange={handleFilterChange}
                   placeholder="e.g., EMP001"
+                  disabled={showBestEmployees}
                 />
               </div>
               <div className="form-group" style={{ marginBottom: 0 }}>
@@ -112,6 +129,7 @@ const AllEmployeesAttendance = () => {
                   name="startDate"
                   value={filters.startDate}
                   onChange={handleFilterChange}
+                  disabled={showBestEmployees}
                 />
               </div>
               <div className="form-group" style={{ marginBottom: 0 }}>
@@ -121,6 +139,7 @@ const AllEmployeesAttendance = () => {
                   name="endDate"
                   value={filters.endDate}
                   onChange={handleFilterChange}
+                  disabled={showBestEmployees}
                 />
               </div>
               <div className="form-group" style={{ marginBottom: 0 }}>
@@ -129,6 +148,7 @@ const AllEmployeesAttendance = () => {
                   name="status"
                   value={filters.status}
                   onChange={handleFilterChange}
+                  disabled={showBestEmployees}
                 >
                   <option value="">All</option>
                   <option value="present">Present</option>
@@ -139,59 +159,70 @@ const AllEmployeesAttendance = () => {
               </div>
             </div>
             <div style={{ marginTop: '15px', display: 'flex', gap: '10px' }}>
-              <button className="btn btn-primary" onClick={handleApplyFilters}>
+              <button className="btn btn-primary" onClick={handleApplyFilters} disabled={showBestEmployees}>
                 Apply Filters
               </button>
-              <button className="btn btn-secondary" onClick={handleClearFilters}>
+              <button className="btn btn-secondary" onClick={handleClearFilters} disabled={showBestEmployees}>
                 Clear Filters
               </button>
             </div>
           </div>
 
-          {/* Attendance Table */}
-          <div className="card">
-            <h2>Attendance Records</h2>
-            {loading ? (
-              <LoadingSpinner />
-            ) : allAttendance.length > 0 ? (
-              <div className="table-container">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Date</th>
-                      <th>Employee ID</th>
-                      <th>Name</th>
-                      <th>Department</th>
-                      <th>Check In</th>
-                      <th>Check Out</th>
-                      <th>Status</th>
-                      <th>Total Hours</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {allAttendance.map((attendance) => (
-                      <tr key={attendance._id || attendance.id}>
-                        <td>{formatDate(attendance.date)}</td>
-                        <td>{attendance.userId?.employeeId || 'N/A'}</td>
-                        <td>{attendance.userId?.name || 'N/A'}</td>
-                        <td>{attendance.userId?.department || 'N/A'}</td>
-                        <td>{attendance.checkInTime ? formatDateTime(attendance.checkInTime) : '-'}</td>
-                        <td>{attendance.checkOutTime ? formatDateTime(attendance.checkOutTime) : '-'}</td>
-                        <td>
-                          <span className={`badge badge-${attendance.status}`}>
-                            {attendance.status}
-                          </span>
-                        </td>
-                        <td>{attendance.totalHours || 0}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <p>No attendance records found.</p>
-            )}
-          </div>
+          {/* Attendance Table - Only show when toggle is OFF */}
+          {!showBestEmployees && (
+            <div className="card">
+              <h2>Attendance Records</h2>
+              {loading ? (
+                <LoadingSpinner />
+              ) : allAttendance.length > 0 ? (
+                <>
+                  <div className="table-container">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Date</th>
+                          <th>Employee ID</th>
+                          <th>Name</th>
+                          <th>Department</th>
+                          <th>Check In</th>
+                          <th>Check Out</th>
+                          <th>Status</th>
+                          <th>Total Hours</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {paginatedAttendance.map((attendance) => (
+                          <tr key={attendance._id || attendance.id}>
+                            <td>{formatDate(attendance.date)}</td>
+                            <td>{attendance.userId?.employeeId || 'N/A'}</td>
+                            <td>{attendance.userId?.name || 'N/A'}</td>
+                            <td>{attendance.userId?.department || 'N/A'}</td>
+                            <td>{attendance.checkInTime ? formatDateTime(attendance.checkInTime) : '-'}</td>
+                            <td>{attendance.checkOutTime ? formatDateTime(attendance.checkOutTime) : '-'}</td>
+                            <td>
+                              <span className={`badge badge-${attendance.status}`}>
+                                {attendance.status}
+                              </span>
+                            </td>
+                            <td>{attendance.totalHours || 0}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <Pagination
+                    currentPage={attendancePage}
+                    totalPages={attendanceTotalPages}
+                    onPageChange={setAttendancePage}
+                    itemsPerPage={itemsPerPage}
+                    totalItems={allAttendance.length}
+                  />
+                </>
+              ) : (
+                <p>No attendance records found.</p>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Best Employees Section */}
@@ -211,11 +242,17 @@ const AllEmployeesAttendance = () => {
                         dispatch(getBestEmployees({ month: parseInt(e.target.value), year }));
                       }}
                     >
-                      {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
-                        <option key={m} value={m}>
-                          {new Date(year, m - 1).toLocaleString('default', { month: 'long' })}
-                        </option>
-                      ))}
+                      {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => {
+                        const currentYear = new Date().getFullYear();
+                        const currentMonth = new Date().getMonth() + 1;
+                        const isFutureMonth = year === currentYear && m > currentMonth;
+                        
+                        return (
+                          <option key={m} value={m} disabled={isFutureMonth}>
+                            {new Date(year, m - 1).toLocaleString('default', { month: 'long' })}
+                          </option>
+                        );
+                      })}
                     </select>
                   </div>
                   <div className="filter-group">
@@ -224,15 +261,30 @@ const AllEmployeesAttendance = () => {
                       id="year"
                       value={year}
                       onChange={(e) => {
-                        setYear(parseInt(e.target.value));
-                        dispatch(getBestEmployees({ month, year: parseInt(e.target.value) }));
+                        const newYear = parseInt(e.target.value);
+                        setYear(newYear);
+                        
+                        // If switching to current year and selected month is in future, reset to current month
+                        const currentYear = new Date().getFullYear();
+                        const currentMonth = new Date().getMonth() + 1;
+                        if (newYear === currentYear && month > currentMonth) {
+                          setMonth(currentMonth);
+                          dispatch(getBestEmployees({ month: currentMonth, year: newYear }));
+                        } else {
+                          dispatch(getBestEmployees({ month, year: newYear }));
+                        }
                       }}
                     >
-                      {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 2 + i).map((y) => (
-                        <option key={y} value={y}>
-                          {y}
-                        </option>
-                      ))}
+                      {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 2 + i).map((y) => {
+                        const currentYear = new Date().getFullYear();
+                        const isFutureYear = y > currentYear;
+                        
+                        return (
+                          <option key={y} value={y} disabled={isFutureYear}>
+                            {y}
+                          </option>
+                        );
+                      })}
                     </select>
                   </div>
                 </div>
@@ -257,7 +309,7 @@ const AllEmployeesAttendance = () => {
                         <div className="performer-stats">
                           <div className="stat-item">
                             <span className="stat-label">Score</span>
-                            <span className="stat-value" style={{ color: 'black' }}>
+                            <span className="stat-value">
                               {emp.score.toFixed(1)}%
                             </span>
                             <span className="stat-badge" style={{ backgroundColor: getScoreColor(emp.score) }}>
@@ -311,31 +363,41 @@ const AllEmployeesAttendance = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {bestEmployees.allEmployees.map((emp, index) => (
-                          <tr key={emp.employeeId}>
-                            <td>
-                              <span className="rank-badge" style={{ backgroundColor: getScoreColor(emp.score) }}>
-                                #{index + 1}
-                              </span>
-                            </td>
-                            <td><strong>{emp.name}</strong></td>
-                            <td>{emp.employeeId}</td>
-                            <td>{emp.department}</td>
-                            <td>
-                              <span style={{ color: getScoreColor(emp.score), fontWeight: 'bold' }}>
-                                {emp.score.toFixed(1)}%
-                              </span>
-                            </td>
-                            <td>{emp.present}</td>
-                            <td>{emp.late}</td>
-                            <td>{emp.absent}</td>
-                            <td>{emp.totalHours.toFixed(1)}h</td>
-                            <td>{emp.attendanceRate.toFixed(1)}%</td>
-                          </tr>
-                        ))}
+                        {paginatedRanking.map((emp, index) => {
+                          const actualRank = (rankingPage - 1) * itemsPerPage + index + 1;
+                          return (
+                            <tr key={emp.employeeId}>
+                              <td>
+                                <span className="rank-badge" style={{ backgroundColor: getScoreColor(emp.score) }}>
+                                  #{actualRank}
+                                </span>
+                              </td>
+                              <td><strong>{emp.name}</strong></td>
+                              <td>{emp.employeeId}</td>
+                              <td>{emp.department}</td>
+                              <td>
+                                <span style={{ color: getScoreColor(emp.score), fontWeight: 'bold' }}>
+                                  {emp.score.toFixed(1)}%
+                                </span>
+                              </td>
+                              <td>{emp.present}</td>
+                              <td>{emp.late}</td>
+                              <td>{emp.absent}</td>
+                              <td>{emp.totalHours.toFixed(1)}h</td>
+                              <td>{emp.attendanceRate.toFixed(1)}%</td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
+                  <Pagination
+                    currentPage={rankingPage}
+                    totalPages={rankingTotalPages}
+                    onPageChange={setRankingPage}
+                    itemsPerPage={itemsPerPage}
+                    totalItems={allEmployeesRanking.length}
+                  />
                 </div>
               </>
             ) : (

@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { checkAuth } from './store/slices/authSlice';
 import Navbar from './components/Navbar';
+import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import EmployeeDashboard from './pages/EmployeeDashboard';
@@ -14,9 +15,8 @@ import ManagerDashboard from './pages/ManagerDashboard';
 import AllEmployeesAttendance from './pages/AllEmployeesAttendance';
 import TeamCalendar from './pages/TeamCalendar';
 import Reports from './pages/Reports';
-import HandleLeaveRequests from './pages/HandleLeaveRequests';
-import TroubleshootReports from './pages/TroubleshootReports';
 import Profile from './pages/Profile';
+import Approvals from './pages/Approvals';
 import './App.css';
 
 function App() {
@@ -32,7 +32,11 @@ function App() {
       {isAuthenticated && <Navbar />}
       <Routes>
         <Route
-          path="/login"
+          path="/"
+          element={isAuthenticated ? <Navigate to={user?.role === 'manager' ? '/manager/dashboard' : '/dashboard'} /> : <Home />}
+        />
+        <Route
+          path="/login/:userType"
           element={isAuthenticated ? <Navigate to={user?.role === 'manager' ? '/manager/dashboard' : '/dashboard'} /> : <Login />}
         />
         <Route
@@ -56,15 +60,16 @@ function App() {
                 <Route path="/manager/attendance" element={<AllEmployeesAttendance />} />
                 <Route path="/manager/calendar" element={<TeamCalendar />} />
                 <Route path="/manager/reports" element={<Reports />} />
-                <Route path="/manager/leave-requests" element={<HandleLeaveRequests />} />
-                <Route path="/manager/troubleshoot" element={<TroubleshootReports />} />
+                <Route path="/manager/approvals" element={<Approvals />} />
                 <Route path="/profile" element={<Profile />} />
               </>
             )}
-            <Route path="/" element={<Navigate to={user?.role === 'manager' ? '/manager/dashboard' : '/dashboard'} />} />
           </>
         ) : (
-          <Route path="*" element={<Navigate to="/login" />} />
+          <>
+            <Route path="/login" element={<Navigate to="/login/employee" />} />
+            <Route path="*" element={<Navigate to="/" />} />
+          </>
         )}
       </Routes>
     </div>

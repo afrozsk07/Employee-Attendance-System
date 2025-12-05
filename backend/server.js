@@ -19,6 +19,7 @@ app.use('/api/dashboard', require('./routes/dashboard'));
 app.use('/api/leave', require('./routes/leave'));
 app.use('/api/problem', require('./routes/problem'));
 app.use('/api/profile', require('./routes/profile'));
+app.use('/api/registration-requests', require('./routes/registrationRequests'));
 
 app.get('/', (req, res) => {
   res.send('Employee Attendance System API - Backend is running.');

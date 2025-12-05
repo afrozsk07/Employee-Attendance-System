@@ -28,6 +28,7 @@ const Profile = () => {
       fetchHeatMapData();
       fetchAttendanceScore();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, selectedYear]);
 
   const fetchHeatMapData = async () => {
@@ -172,7 +173,7 @@ const Profile = () => {
     });
 
     return { grid, monthLabels };
-  }, [heatMapData, isDarkMode]);
+  }, [heatMapData]);
 
 
   const getScoreColor = (score) => {

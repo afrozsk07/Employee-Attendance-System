@@ -14,7 +14,8 @@ const corsOptions = {
       'http://localhost:3000',
       process.env.FRONTEND_URL,
       /\.vercel\.app$/ // Allow all Vercel preview deployments
-    ];
+    ].filter(Boolean); // Remove undefined values
+    
     if (!origin || allowedOrigins.some(allowed => 
       typeof allowed === 'string' ? allowed === origin : allowed.test(origin)
     )) {

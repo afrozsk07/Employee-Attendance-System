@@ -90,7 +90,7 @@ router.post('/login', [
     const { email, password } = req.body;
 
     console.log('Login attempt for:', email);
-    console.log('Database:', mongoose.connection.db.databaseName);
+    console.log('Database:', mongoose.connection.db?.databaseName || 'unknown');
 
     // Find user
     const user = await User.findOne({ email });
@@ -100,6 +100,8 @@ router.post('/login', [
       console.log('User not found in database');
       return res.status(401).json({ message: 'Invalid credentials' });
     }
+
+    console.log('User details:', { email: user.email, role: user.role, hasPassword: !!user.password });
 
     // Check password
     const isMatch = await user.comparePassword(password);

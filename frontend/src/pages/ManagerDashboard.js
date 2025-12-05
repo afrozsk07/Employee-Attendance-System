@@ -4,12 +4,14 @@ import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, 
   Tooltip, Legend, ResponsiveContainer, Cell
 } from 'recharts';
+import { useTheme } from '../context/ThemeContext';
 import api from '../utils/api';
 import { formatDate } from '../utils/dateFormatter';
 import Pagination from '../components/Pagination';
 import './ManagerDashboard.css';
 
 const ManagerDashboard = () => {
+  const { isDarkMode } = useTheme();
   const { user } = useSelector((state) => state.auth);
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -53,23 +55,91 @@ const ManagerDashboard = () => {
   );
   const absentTotalPages = Math.ceil(absentEmployees.length / itemsPerPage);
   
-  // Custom tooltip for better formatting
+  // Custom tooltip for better formatting with dark mode support
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
+      // Define colors for each data type to match the chart
+      const getColorForEntry = (name) => {
+        const lowerName = name.toLowerCase();
+        if (lowerName === 'present') return '#4CAF50'; // Green
+        if (lowerName === 'absent') return '#F44336'; // Red
+        if (lowerName === 'late') return '#FFC107'; // Yellow
+        return '#666'; // Default
+      };
+
       return (
-        <div className="custom-tooltip" style={{
-          backgroundColor: 'rgba(255, 255, 255, 0.95)',
-          padding: '10px',
-          border: '1px solid #ccc',
-          borderRadius: '5px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
-        }}>
-          <p style={{ margin: '0 0 5px 0', fontWeight: 'bold' }}>{label}</p>
-          {payload.map((entry, index) => (
-            <p key={index} style={{ margin: '2px 0', color: entry.color }}>
-              {entry.name}: <strong>{entry.value}</strong>
-            </p>
-          ))}
+        <div 
+          style={{
+            backgroundColor: isDarkMode ? '#1a1f2e' : '#ffffff',
+            padding: '14px 16px',
+            border: isDarkMode ? '2px solid #4a5568' : '2px solid #d1d5db',
+            borderRadius: '10px',
+            boxShadow: isDarkMode 
+              ? '0 8px 24px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1)' 
+              : '0 4px 12px rgba(0, 0, 0, 0.15)',
+            minWidth: '180px',
+            zIndex: 9999
+          }}
+        >
+          <div style={{ 
+            margin: '0 0 10px 0', 
+            fontWeight: '700',
+            fontSize: '15px',
+            color: isDarkMode ? '#ffffff !important' : '#1a202c',
+            borderBottom: isDarkMode ? '2px solid #4a5568' : '2px solid #e5e7eb',
+            paddingBottom: '8px',
+            letterSpacing: '0.3px'
+          }}>
+            {label}
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            {payload.map((entry, index) => {
+              const displayColor = getColorForEntry(entry.name);
+              return (
+                <div 
+                  key={index} 
+                  style={{ 
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '12px',
+                    padding: '4px 0'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ 
+                      display: 'inline-block',
+                      width: '12px',
+                      height: '12px',
+                      backgroundColor: displayColor,
+                      borderRadius: '3px',
+                      boxShadow: isDarkMode 
+                        ? `0 0 8px ${displayColor}60` 
+                        : `0 2px 4px ${displayColor}40`,
+                      border: isDarkMode ? '1px solid rgba(255, 255, 255, 0.3)' : 'none',
+                      flexShrink: 0
+                    }}></span>
+                    <span style={{ 
+                      fontSize: '13px',
+                      color: isDarkMode ? '#e2e8f0 !important' : '#4b5563',
+                      fontWeight: '500'
+                    }}>
+                      {entry.name}
+                    </span>
+                  </div>
+                  <strong style={{ 
+                    fontSize: '15px',
+                    color: isDarkMode ? '#ffffff !important' : '#1a202c',
+                    fontWeight: '700',
+                    minWidth: '30px',
+                    textAlign: 'right'
+                  }}>
+                    {entry.value}
+                  </strong>
+                </div>
+              );
+            })}
+          </div>
         </div>
       );
     }
@@ -127,26 +197,30 @@ const ManagerDashboard = () => {
             <h2 style={{ marginBottom: '20px' }}>📈 Weekly Attendance Trend</h2>
             <ResponsiveContainer width="100%" height={350}>
               <LineChart data={dashboardData.weeklyTrend} margin={{ top: 10, right: 30, left: 0, bottom: 60 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                <CartesianGrid 
+                  strokeDasharray="3 3" 
+                  stroke={isDarkMode ? '#3d4451' : '#e0e0e0'} 
+                />
                 <XAxis 
                   dataKey="date" 
-                  tick={{ fill: '#666', fontSize: 12 }}
+                  tick={{ fill: isDarkMode ? '#cbd5e0' : '#666', fontSize: 12 }}
                   angle={-45}
                   textAnchor="end"
                   height={80}
+                  stroke={isDarkMode ? '#3d4451' : '#ccc'}
                 />
-                <YAxis tick={{ fill: '#666', fontSize: 12 }} />
+                <YAxis 
+                  tick={{ fill: isDarkMode ? '#cbd5e0' : '#666', fontSize: 12 }}
+                  stroke={isDarkMode ? '#3d4451' : '#ccc'}
+                />
                 <Tooltip 
                   content={<CustomTooltip />}
-                  contentStyle={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                    border: '1px solid #ccc',
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
-                  }}
                 />
                 <Legend 
-                  wrapperStyle={{ paddingTop: '20px' }}
+                  wrapperStyle={{ 
+                    paddingTop: '20px',
+                    color: isDarkMode ? '#cbd5e0' : '#666'
+                  }}
                   iconType="line"
                 />
                 <Line 
@@ -206,32 +280,41 @@ const ManagerDashboard = () => {
                     <feDropShadow dx="0" dy="2" stdDeviation="3" floodOpacity="0.3"/>
                   </filter>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" vertical={false} />
+                <CartesianGrid 
+                  strokeDasharray="3 3" 
+                  stroke={isDarkMode ? '#3d4451' : '#e0e0e0'} 
+                  vertical={false} 
+                />
                 <XAxis 
                   dataKey="department" 
-                  tick={{ fill: '#666', fontSize: 11, fontWeight: 500 }}
+                  tick={{ fill: isDarkMode ? '#cbd5e0' : '#666', fontSize: 11, fontWeight: 500 }}
                   angle={-45}
                   textAnchor="end"
                   height={100}
+                  stroke={isDarkMode ? '#3d4451' : '#ccc'}
                 />
                 <YAxis 
-                  tick={{ fill: '#666', fontSize: 12 }}
+                  tick={{ fill: isDarkMode ? '#cbd5e0' : '#666', fontSize: 12 }}
                   interval={0}
                   tickMargin={8}
+                  stroke={isDarkMode ? '#3d4451' : '#ccc'}
                   label={{ 
                     value: 'No. of Employees', 
                     angle: -90, 
                     position: 'insideLeft', 
-                    style: { fill: '#666', textAnchor: 'middle' },
+                    style: { fill: isDarkMode ? '#cbd5e0' : '#666', textAnchor: 'middle' },
                     offset: 10
                   }}
                 />
                 <Tooltip 
                   content={<CustomTooltip />}
-                  cursor={{ fill: 'rgba(0, 0, 0, 0.05)' }}
+                  cursor={{ fill: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)' }}
                 />
                 <Legend 
-                  wrapperStyle={{ paddingTop: '20px' }}
+                  wrapperStyle={{ 
+                    paddingTop: '20px',
+                    color: isDarkMode ? '#cbd5e0' : '#666'
+                  }}
                   iconType="square"
                   iconSize={12}
                 />

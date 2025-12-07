@@ -282,10 +282,11 @@
     grid-template-columns: 1fr;
   }
 
-  /* Remove fixed height and add max-height with scroll */
+  /* Set max-height with scroll for both cards */
   .profile-stats-container > .card {
-    max-height: 600px;
+    max-height: 550px;
     overflow-y: auto;
+    overflow-x: hidden;
   }
 
   .score-stats {
@@ -313,9 +314,12 @@
   /* Make heatmap more compact on mobile */
   .minimal-heatmap-container {
     padding: 15px 10px;
-    max-height: 450px;
+    max-width: 100%;
     overflow-x: auto;
-    overflow-y: auto;
+  }
+
+  .minimal-heatmap-wrapper {
+    max-width: 100%;
   }
 
   .minimal-heatmap-cell {
@@ -339,25 +343,26 @@
 }
 
 @media (max-width: 480px) {
-  /* Remove max-height and scroll for attendance score card */
+  /* Set max-height for both cards to prevent page extension */
   .profile-stats-container > .card {
-    max-height: none;
-    overflow-y: visible;
+    max-height: 480px;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   /* Change to 2x3 grid (2 columns, 3 rows) */
   .score-stats {
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    gap: 10px;
+    gap: 8px;
   }
 
   .stat-box {
-    padding: 12px 8px;
+    padding: 10px 6px;
   }
 
   .stat-value {
-    font-size: 24px;
+    font-size: 22px;
   }
 
   .stat-label {
@@ -365,34 +370,39 @@
   }
 
   .score-circle {
-    width: 80px;
-    height: 80px;
+    width: 75px;
+    height: 75px;
     border-width: 4px;
   }
 
   .score-value {
-    font-size: 22px;
+    font-size: 20px;
   }
 
   .score-badge {
-    padding: 6px 16px;
-    font-size: 11px;
+    padding: 5px 14px;
+    font-size: 10px;
+  }
+
+  .score-container {
+    gap: 15px;
+    padding: 10px 0;
   }
 
   /* Further compact heatmap on very small screens */
   .minimal-heatmap-container {
-    max-height: 380px;
-    padding: 12px 8px;
+    padding: 10px 6px;
+    max-width: 100%;
   }
 
   .minimal-heatmap-cell {
-    width: 12px;
-    height: 12px;
+    width: 11px;
+    height: 11px;
   }
 
   .minimal-heatmap-grid {
     gap: 2px;
-    padding: 8px;
+    padding: 6px;
   }
 
   .heatmap-row {
@@ -400,22 +410,22 @@
   }
 
   .month-label {
-    font-size: 10px;
+    font-size: 9px;
   }
 
   .minimal-heatmap-legend {
-    gap: 10px;
-    font-size: 11px;
-    padding: 10px 12px;
+    gap: 8px;
+    font-size: 10px;
+    padding: 8px 10px;
   }
 
   .legend-item {
-    gap: 6px;
+    gap: 5px;
   }
 
   .legend-square {
-    width: 10px;
-    height: 10px;
+    width: 9px;
+    height: 9px;
   }
 }
 

@@ -930,6 +930,22 @@ a, button, input, select, textarea {
   .stat-card .value {
     font-size: 28px;
   }
+
+  /* Keep month/year filters side by side on mobile */
+  .card > div[style*="flex"][style*="gap: 20px"] {
+    flex-direction: row !important;
+    gap: 10px !important;
+  }
+
+  .card > div[style*="flex"] > .form-group {
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
+
+  .card > div[style*="flex"] > .form-group select {
+    font-size: 14px !important;
+    padding: 8px !important;
+  }
 }
 
 

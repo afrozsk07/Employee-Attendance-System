@@ -17,22 +17,31 @@ A full-stack employee attendance tracking system with role-based access control 
 ## Features
 
 ### Employee Features
-- Register/Login
+- Register/Login with password
 - Mark attendance (Check In / Check Out)
 - View attendance history (calendar and table view)
 - View monthly summary (Present/Absent/Late days)
-- Dashboard with statistics
-- Profile page
+- Apply for leave requests
+- Report workplace problems/issues
+- Dashboard with statistics and charts
+- Profile page with attendance stats
+- Dark/Light theme toggle
+- Fully responsive mobile design
 
 ### Manager Features
-- Login
+- Login with secure authentication
 - View all employees attendance
 - Filter by employee, date, status
 - View team attendance summary
 - Export attendance reports (CSV)
+- Handle leave requests (Approve/Reject)
+- View and manage problem reports
 - Dashboard with team statistics
-- Team calendar view
+- Team calendar view with pagination
 - Department-wise attendance charts
+- Employee attendance ranking
+- Dark/Light theme toggle
+- Fully responsive mobile design
 
 ## Project Structure
 
@@ -41,11 +50,16 @@ Employee-Attendance-System/
 ├── backend/
 │   ├── models/
 │   │   ├── User.js
-│   │   └── Attendance.js
+│   │   ├── Attendance.js
+│   │   ├── Leave.js
+│   │   ├── ProblemReport.js
+│   │   └── RegistrationRequest.js
 │   ├── routes/
 │   │   ├── auth.js
 │   │   ├── attendance.js
-│   │   └── dashboard.js
+│   │   ├── dashboard.js
+│   │   ├── leave.js
+│   │   └── problemReport.js
 │   ├── middleware/
 │   │   └── auth.js
 │   ├── scripts/
@@ -215,6 +229,19 @@ The application will be available at:
 - `GET /api/attendance/export` - Export CSV
 - `GET /api/attendance/today-status` - Get today's status for all
 
+### Leave Management
+- `POST /api/leave/apply` - Apply for leave (Employee)
+- `GET /api/leave/my-leaves` - Get my leave requests (Employee)
+- `GET /api/leave/all` - Get all leave requests (Manager)
+- `PUT /api/leave/:id/approve` - Approve leave request (Manager)
+- `PUT /api/leave/:id/reject` - Reject leave request (Manager)
+
+### Problem Reports
+- `POST /api/problem-report/create` - Create problem report (Employee)
+- `GET /api/problem-report/my-reports` - Get my reports (Employee)
+- `GET /api/problem-report/all` - Get all reports (Manager)
+- `PUT /api/problem-report/:id/resolve` - Resolve report (Manager)
+
 ### Dashboard
 - `GET /api/dashboard/employee` - Employee dashboard stats
 - `GET /api/dashboard/manager` - Manager dashboard stats
@@ -247,6 +274,31 @@ The application will be available at:
 }
 ```
 
+### Leave Model
+```javascript
+{
+  userId: ObjectId (ref: User),
+  leaveType: String (sick/casual/vacation),
+  startDate: Date,
+  endDate: Date,
+  reason: String,
+  status: String (pending/approved/rejected),
+  createdAt: Date
+}
+```
+
+### ProblemReport Model
+```javascript
+{
+  userId: ObjectId (ref: User),
+  title: String,
+  description: String,
+  priority: String (low/medium/high),
+  status: String (open/in-progress/resolved),
+  createdAt: Date
+}
+```
+
 ## Default Login Credentials
 
 After running the seed script:
@@ -262,11 +314,12 @@ After running the seed script:
 ## Features Overview
 
 ### Employee Dashboard
-- Today's attendance status
+- Today's attendance status with check-in/check-out buttons
 - Monthly statistics (Present/Absent/Late days)
-- Total hours worked
+- Total hours worked this month
 - Recent attendance history (last 7 days)
-- Quick check-in/check-out buttons
+- Quick access to leave application and problem reporting
+- Responsive charts and statistics
 
 ### Manager Dashboard
 - Total employees count
@@ -275,10 +328,12 @@ After running the seed script:
 - Weekly attendance trend chart
 - Department-wise attendance chart
 - List of absent employees today
+- Pending leave requests overview
+- Open problem reports count
 
 ### Attendance History (Employee)
-- Calendar view with color coding
-- Table view with all records
+- Calendar view with color-coded attendance status
+- Table view with all attendance records
 - Monthly summary statistics
 - Filter by month/year
 
@@ -286,11 +341,28 @@ After running the seed script:
 - Calendar view showing attendance for all employees
 - Click on date to see detailed attendance
 - Filter by month/year
+- Pagination for easy navigation
+- Mobile-responsive card layout
+
+### Leave Management
+- Employee: Apply for leave with date range and reason
+- Employee: View leave request history and status
+- Manager: View all pending leave requests
+- Manager: Approve or reject leave requests
+- Status tracking (Pending/Approved/Rejected)
+
+### Problem Reporting
+- Employee: Report workplace issues with priority levels
+- Employee: Track problem report status
+- Manager: View all problem reports
+- Manager: Mark reports as resolved
+- Priority levels (Low/Medium/High)
 
 ### Reports (Manager)
 - Export attendance data to CSV
 - Filter by date range and employee
 - Download reports for analysis
+- Employee attendance ranking
 
 ## Development
 
@@ -303,6 +375,27 @@ After running the seed script:
 - `npm start` - Start development server
 - `npm run build` - Build for production
 - `npm test` - Run tests
+
+## UI/UX Features
+
+### Responsive Design
+- Fully responsive layout for mobile, tablet, and desktop
+- Mobile-optimized navigation with hamburger menu
+- Adaptive chart sizing and layouts
+- Touch-friendly interface elements
+
+### Theme Support
+- Dark and Light theme toggle
+- Theme preference saved in localStorage
+- Consistent styling across all pages
+- Enhanced contrast for better readability
+
+### User Experience
+- Password visibility toggle on login/register forms
+- Auto-closing mobile menu on navigation
+- Smooth animations and transitions
+- Loading states and error handling
+- Toast notifications for user actions
 
 ## Troubleshooting
 
@@ -318,6 +411,11 @@ After running the seed script:
 ### CORS Issues
 - Backend CORS is configured to allow requests from `http://localhost:3000`
 - If using a different port, update CORS settings in `backend/server.js`
+
+### Login Redirect Issues
+- Clear browser cache and localStorage
+- Ensure backend is running before frontend
+- Check API URL configuration in frontend `.env`
 
 ## Production Deployment
 

@@ -587,6 +587,22 @@ table tbody tr:hover {
   background-color: #e3f2fd !important;
 }
 
+/* Light mode active tile */
+.react-calendar__tile--active {
+  background: #3b82f6 !important;
+  color: white !important;
+}
+
+.react-calendar__tile--active:enabled:hover {
+  background: #2563eb !important;
+  color: white !important;
+}
+
+.react-calendar__tile--active:enabled:focus {
+  background: #3b82f6 !important;
+  color: white !important;
+}
+
 /* Form Styles */
 .form-container {
   max-width: 500px;
@@ -972,12 +988,18 @@ a, button, input, select, textarea {
 }
 
 .dark-mode .react-calendar__tile--active {
-  background: #3b82f6;
-  color: white;
+  background: #3b82f6 !important;
+  color: white !important;
 }
 
 .dark-mode .react-calendar__tile--active:enabled:hover {
-  background: #2563eb;
+  background: #2563eb !important;
+  color: white !important;
+}
+
+.dark-mode .react-calendar__tile--active:enabled:focus {
+  background: #3b82f6 !important;
+  color: white !important;
 }
 
 .dark-mode .react-calendar__month-view__days__day--neighboringMonth {

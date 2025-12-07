@@ -30,10 +30,27 @@
     margin-bottom: 10px !important;
   }
 
+  /* Ensure cards don't extend page - set max height and scroll */
+  .page > div[style*="grid"] > .card {
+    max-height: 600px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Make table container scrollable within card */
+  .card .table-container {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 400px;
+    flex-shrink: 0;
+  }
+
   /* Fix pagination width to match table on mobile */
   .card .table-container + .pagination-container {
     max-width: 100%;
     overflow-x: auto;
+    flex-shrink: 0;
   }
 }
 
@@ -52,6 +69,15 @@
   table th,
   table td {
     padding: 8px 6px;
+  }
+
+  /* Reduce max height for smaller screens */
+  .page > div[style*="grid"] > .card {
+    max-height: 500px;
+  }
+
+  .card .table-container {
+    max-height: 300px;
   }
 }
 

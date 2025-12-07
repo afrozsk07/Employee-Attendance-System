@@ -282,9 +282,10 @@
     grid-template-columns: 1fr;
   }
 
-  /* Make both cards same height on mobile */
+  /* Remove fixed height and add max-height with scroll */
   .profile-stats-container > .card {
-    min-height: 500px;
+    max-height: 600px;
+    overflow-y: auto;
   }
 
   .score-stats {
@@ -312,6 +313,9 @@
   /* Make heatmap more compact on mobile */
   .minimal-heatmap-container {
     padding: 15px 10px;
+    max-height: 450px;
+    overflow-x: auto;
+    overflow-y: auto;
   }
 
   .minimal-heatmap-cell {
@@ -335,6 +339,11 @@
 }
 
 @media (max-width: 480px) {
+  /* Reduce card max-height for smaller screens */
+  .profile-stats-container > .card {
+    max-height: 500px;
+  }
+
   .score-stats {
     grid-template-columns: 1fr;
     gap: 10px;
@@ -363,6 +372,11 @@
   }
 
   /* Further compact heatmap on very small screens */
+  .minimal-heatmap-container {
+    max-height: 380px;
+    padding: 12px 8px;
+  }
+
   .minimal-heatmap-cell {
     width: 12px;
     height: 12px;
@@ -370,6 +384,7 @@
 
   .minimal-heatmap-grid {
     gap: 2px;
+    padding: 8px;
   }
 
   .heatmap-row {
@@ -383,6 +398,7 @@
   .minimal-heatmap-legend {
     gap: 10px;
     font-size: 11px;
+    padding: 10px 12px;
   }
 
   .legend-item {

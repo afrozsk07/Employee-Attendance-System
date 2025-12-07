@@ -850,7 +850,7 @@ a, button, input, select, textarea {
 @media (max-width: 480px) {
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap:12px;
+    gap: 12px;
   }
 
   .page-header h1 {
@@ -900,6 +900,19 @@ a, button, input, select, textarea {
   .charts-grid .card h2 {
     font-size: 16px;
     margin-bottom: 15px !important;
+  }
+
+  /* Make stat cards more compact on mobile */
+  .stat-card {
+    padding: 15px 10px;
+  }
+
+  .stat-card h3 {
+    font-size: 12px;
+  }
+
+  .stat-card .value {
+    font-size: 28px;
   }
 }
 

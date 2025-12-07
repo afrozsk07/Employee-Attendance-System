@@ -345,11 +345,11 @@
     overflow-y: visible;
   }
 
-  /* Change to 3x2 grid layout for stats */
+  /* Change to 2x3 grid (2 columns, 3 rows) */
   .score-stats {
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 8px;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 10px;
   }
 
   .stat-box {

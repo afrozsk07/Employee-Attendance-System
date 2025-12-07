@@ -339,36 +339,44 @@
 }
 
 @media (max-width: 480px) {
-  /* Reduce card max-height for smaller screens */
+  /* Remove max-height and scroll for attendance score card */
   .profile-stats-container > .card {
-    max-height: 500px;
+    max-height: none;
+    overflow-y: visible;
   }
 
+  /* Change to 3x2 grid layout for stats */
   .score-stats {
-    grid-template-columns: 1fr;
-    gap: 10px;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 8px;
   }
 
   .stat-box {
-    padding: 15px 10px;
+    padding: 12px 8px;
   }
 
   .stat-value {
-    font-size: 28px;
+    font-size: 24px;
   }
 
   .stat-label {
-    font-size: 11px;
+    font-size: 10px;
   }
 
   .score-circle {
-    width: 90px;
-    height: 90px;
+    width: 80px;
+    height: 80px;
     border-width: 4px;
   }
 
   .score-value {
-    font-size: 24px;
+    font-size: 22px;
+  }
+
+  .score-badge {
+    padding: 6px 16px;
+    font-size: 11px;
   }
 
   /* Further compact heatmap on very small screens */

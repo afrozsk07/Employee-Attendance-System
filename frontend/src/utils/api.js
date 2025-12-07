@@ -22,9 +22,15 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    // Only redirect on 401 if user is already authenticated (token expired)
+    // Don't redirect on login failures (user not authenticated yet)
+    if (error.response?.status === 401 && localStorage.getItem('token')) {
       localStorage.removeItem('token');
-      window.location.href = '/login';
+      // Preserve current path if it's a login page
+      const currentPath = window.location.pathname;
+      if (!currentPath.includes('/login')) {
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

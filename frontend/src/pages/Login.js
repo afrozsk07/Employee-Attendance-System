@@ -18,16 +18,27 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate(user?.role === 'manager' ? '/manager/dashboard' : '/dashboard');
+    // Only navigate if successfully authenticated
+    if (isAuthenticated && user) {
+      navigate(user.role === 'manager' ? '/manager/dashboard' : '/dashboard');
     }
   }, [isAuthenticated, user, navigate]);
 
+  // Clear error when component unmounts
   useEffect(() => {
     return () => {
       dispatch(clearError());
     };
   }, [dispatch]);
+
+  // Clear error when userType changes (prevents stale errors)
+  // But don't clear if we're just mounting
+  useEffect(() => {
+    // Only clear error if userType is defined (not initial mount)
+    if (userType) {
+      dispatch(clearError());
+    }
+  }, [userType, dispatch]);
 
   const handleChange = (e) => {
     setFormData({
@@ -38,9 +49,12 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    e.stopPropagation();
+    
     const result = await dispatch(login(formData));
     
-    // Clear form fields after 3 seconds if login fails
+    // Clear form fields after 10 seconds if login fails
+    // Don't navigate away - stay on current login page
     if (login.rejected.match(result)) {
       setTimeout(() => {
         setFormData({

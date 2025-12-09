@@ -2,6 +2,8 @@
 
 A full-stack employee attendance tracking system with role-based access control for employees and managers.
 
+### Demo Link: [https://attendance-frontend-beta-plum.vercel.app/]
+
 ## Applicant Details
 - Name: Shaik Abdul Afroz Basha
 - College: Vignan's Lara Institute of Technology and Science

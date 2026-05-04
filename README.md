@@ -4,11 +4,6 @@ A full-stack employee attendance tracking system with role-based access control 
 
 ### Demo Link: [https://attendance-frontend-beta-plum.vercel.app/]
 
-## Applicant Details
-- Name: Shaik Abdul Afroz Basha
-- College: Vignan's Lara Institute of Technology and Science
-- Contact No.: 7337590572
-
 ## Tech Stack
 
 - **Frontend**: React + Redux Toolkit
